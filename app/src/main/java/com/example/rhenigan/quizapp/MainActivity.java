@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mAns1;
     private Button mAns2;
     private Button mAns3;
-    private Button mSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         mAns1 = findViewById(R.id.answer1);
         mAns2 = findViewById(R.id.answer2);
         mAns3 = findViewById(R.id.answer3);
-        mSubmit = findViewById(R.id.submit);
+        Button mSubmit = findViewById(R.id.submit);
 
         newProblem();
 
