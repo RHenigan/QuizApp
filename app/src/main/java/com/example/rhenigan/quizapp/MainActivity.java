@@ -2,8 +2,11 @@ package com.example.rhenigan.quizapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,12 +15,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MainActivity";
+
     private QuestionLogic mLogic = new QuestionLogic();
 
     private TextView mQuestion;
-    private Button mAns1;
-    private Button mAns2;
-    private Button mAns3;
+    private RadioGroup mAnswers;
+    private RadioButton mAns1;
+    private RadioButton mAns2;
+    private RadioButton mAns3;
+    private int answerChecked = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mQuestion = findViewById(R.id.question);
+        mAnswers = findViewById(R.id.answers);
         mAns1 = findViewById(R.id.answer1);
         mAns2 = findViewById(R.id.answer2);
         mAns3 = findViewById(R.id.answer3);
@@ -32,30 +40,23 @@ public class MainActivity extends AppCompatActivity {
 
         newProblem();
 
-        mAns1.setOnClickListener(new View.OnClickListener() {
+        mAnswers.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                mAns1.setActivated(true);
-                mAns2.setActivated(false);
-                mAns3.setActivated(false);
-            }
-        });
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                Log.d(TAG, "radiogroup clicked");
 
-        mAns2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAns1.setActivated(false);
-                mAns2.setActivated(true);
-                mAns3.setActivated(false);
-            }
-        });
-
-        mAns3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAns1.setActivated(false);
-                mAns2.setActivated(false);
-                mAns3.setActivated(true);
+                switch (checkedId) {
+                    case R.id.answer1:
+                        answerChecked = 1;
+                        break;
+                    case R.id.answer2:
+                        answerChecked = 2;
+                        break;
+                    case R.id.answer3:
+                        answerChecked = 3;
+                        break;
+                }
+                Log.d(TAG, "answer " + answerChecked + " selected");
             }
         });
 
@@ -63,16 +64,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean ans;
-                if (mAns1.isActivated()) {
-                    ans = mLogic.isCorrect(mLogic.getAnsArray().get(0));
-                    result(ans);
-                } else if(mAns2.isActivated()) {
-                    ans = mLogic.isCorrect(mLogic.getAnsArray().get(1));
-                    result(ans);
-                } else if(mAns3.isActivated()) {
-                    ans = mLogic.isCorrect(mLogic.getAnsArray().get(2));
-                    result(ans);
+                switch (answerChecked) {
+                    case 1:
+                        ans = mLogic.isCorrect(mLogic.getAnsArray().get(0));
+                        result(ans);
+                        break;
+                    case 2:
+                        ans = mLogic.isCorrect(mLogic.getAnsArray().get(1));
+                        result(ans);
+                        break;
+                    case 3:
+                        ans = mLogic.isCorrect(mLogic.getAnsArray().get(2));
+                        result(ans);
+                        break;
+                    default:
+                        break;
                 }
+                mAnswers.clearCheck();
+                answerChecked = 0;
             }
         });
     }
